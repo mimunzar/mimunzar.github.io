@@ -1,0 +1,21 @@
+html {
+    background: #f7fdff;
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    max-width: 600px;
+    width: 100%;
+}
+
+p {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+pre {
+    background-color: #bef2ff;
+    padding: 5px;
+}
+
