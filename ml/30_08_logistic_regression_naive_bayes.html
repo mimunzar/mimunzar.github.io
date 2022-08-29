@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../index.css">
+  <title>Logistic Regression - Generative Training</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a href="../index.html">&lt;&lt; back</a>
+  <h2>Logistic Regression - Generative Training</h2>
+
+  <p>This post builds upon <a href="30_08_logistic_regression.html">previous</a>
+  post and shows how Logistic Regression relates to Naive Bayes.  Concretely  it
+  demonstrates that by using assumptions made by Naive Bayes we  can  arrive  to
+  the   same   following   functional   form   for   Logistic    Regression.</p>
+
+  $$\begin{aligned}
+    P(Y=1|X, W)
+      &= {\exp(w_0 + \sum_i w_i X_i) \over {1 + \exp(w_0 + \sum_i w_i X_i)}} \\[10pt]
+    P(Y=0|X, W)
+      &= {1 \over {1 + \exp(w_0 + \sum_i w_i X_i)}} \\[10pt]
+  \end{aligned}$$
+
+  <p>The   assumptions    made    by    Naive    Bayes    classifier    are:</p>
+  <ul>
+    <li>Y is a boolean random variable</li>
+    <li>X is a vector of continuous random variables \(X = (X_1 \dots X_n)\)</li>
+    <li>For each \(X_i, P(X_i|Y=y_k)\) is Gaussian distribution of the form \(N(\mu_{ik}, \sigma_i)\)</li>
+    <li>For each \(i\) and \(j \neq i, X_i\) and \(X_j\) are Conditionally Independent given \(Y\)</li>
+  </ul>
+
+  <p>Let's start from the Bayes rule where we  can  divide  both  numerator  and
+  denominator by a numerator (the  ratio  stays  the  same)  and  continue  with
+  algebraic manipulations.</p>
+
+  $$\begin{aligned}
+    P(Y=1|X)
+      &= {P(X|Y=1)P(Y=1) \over {P(X|Y=1)P(Y=1) + P(X|Y=0)P(Y=0)}} \\
+      &= {1 \over {1 +         {P(X|Y=0)P(Y=0) \over P(X|Y=1)P(Y=1)}}} \\
+      &= {1 \over {1 + \exp \ln{P(X|Y=0)P(Y=0) \over P(X|Y=1)P(Y=1)}}} \\
+      &= {1 \over {1 + \exp(\ln{P(X|Y=1) \over P(X|Y=0)} + \ln{P(Y=1) \over P(Y=0)})}} \\
+      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)})}}
+  \end{aligned}\tag{1}\label{eq:foo}$$
+
+  <p>In the last equation we have used the Conditional Independence  assumption.
+  Now consider the last part of the denominator.  It can be expanded  to  (using
+  the   assumption   that    \(P(X|Y)\)    has    Gaussian    distribution):</p>
+
+  $$\begin{aligned}
+    \sum_i \ln{P(X_i|Y=1) \over P(X_i|Y=0)}
+      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}}\exp({{-({X_i - \mu_{i1}})^2} \over {2\sigma^2}}) \over {1 \over {\sqrt{2\pi\sigma^2}}}\exp({{-({X_i - \mu_{i0}})^2} \over {2\sigma^2}})} \\
+      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}} \over {1 \over {\sqrt{2\pi\sigma^2}}}} + \ln{\exp{({{({X_i - \mu_{i0}})^2} \over {2\sigma^2}} - {{{({X_i - \mu_{i1}})^2} \over {2\sigma^2}}}})} \\
+      &= \sum_i {{({X_i - \mu_{i0}})^2} \over {2\sigma^2}} - {{{({X_i - \mu_{i1}})^2} \over {2\sigma^2}}} \\
+      &= \sum_i {{X_i^2 - 2X_i\mu_{i0} + \mu_{i0}^2 - X_i^2 + 2X_i\mu_{i1} - \mu_{i1}^2} \over {2\sigma^2}} \\
+      &= \sum_i {{\mu_{i1} - \mu_{i0} \over \sigma^2}X_i + {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}}
+  \end{aligned}$$
+
+  <p>After substitution  back  to  \eqref{eq:foo}  we  get  functional  form  of
+  Logistic Regression.</p>
+
+  $$\begin{aligned}
+    P(Y=0|X)
+      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)})}} \\
+      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i {{\mu_{i1} - \mu_{i0} \over \sigma^2}X_i + {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}}})} \\
+      &= {1 \over {1 + \exp(w_0 + \sum_i w_iX_i)}}
+  \end{aligned}$$
+
+  <p>Where weights \(w_o\) and \(w_i\) are:</p>
+
+  $$\begin{aligned}
+    w_0 &= {\ln{P(Y=1) \over P(Y=0)}} + {\sum_i {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}} \\[10pt]
+    w_i &= {\mu_{i1} - \mu_{i0} \over \sigma^2}
+  \end{aligned}$$
+
+  <p>Note that the two training procedures  often  give  different  results  and
+  have different complexities.  For discussion about  trade-offs  of  these  two
+  approaches and other alternatives refer to references.</p>
+
+  <h3>References</h3>
+  <dl>
+    <dt>Tom Mitchell: Carnegie Mellon University</dt>
+      <dd><a href="http://www.cs.cmu.edu/~tom/10701_sp11/lectures.shtml">http://www.cs.cmu.edu/~tom/10701_sp11/lectures.shtml</a></dd>
+    <dt>Tapan Bhowmik: Inteligencia Artificial</dt>
+      <dd><a href="https://www.redalyc.org/pdf/925/92542543003.pdf">https://www.redalyc.org/pdf/925/92542543003.pdf</a></dd>
+  </dl>
+
+</body>
+</html>
+

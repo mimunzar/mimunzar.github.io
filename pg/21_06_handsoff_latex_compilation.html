@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../index.css">
+  <title>Hands Off LaTex Compilation</title>
+</head>
+<body>
+  <a href="../index.html">&lt;&lt; back</a>
+  <h2>Hands Off LaTex Compilation</h2>
+
+  <p>Recently I have been writing a CV in  LaTex  and  without  any  specialized
+  software it pained me that I have to manually  compile  to  see  the  results.
+  What can I do with it?  How can I implement a watcher which compiles code  for
+  me automatically?</p>
+
+  <p>The easy way to do  a  watcher  is  to  do  an  infinite  loop  which  will
+  periodically repeats the command like so:</p>
+
+  <pre>$ while true; do xelatex cv.tex && xelatex cv.tex; sleep 2; done</pre>
+
+  <p>This works, my code is now compiled every 2 seconds.  What if I didn't make
+  any changes?  The code still compiles.  I can solve that by putting  the  code
+  into a Makefile which will refuse to compile if no change has  been  made.   I
+  can then run the make in the loop instead:</p>
+
+  <pre>
+# Makefile
+.PHONY: all
+
+all: cv.pdf
+
+cv.pdf: cv.tex
+    xelatex cv.tex && xelatex cv.tex</pre>
+
+  <pre>$ while true; do make; sleep 0.5; done</pre>
+
+  <p>The code now compiles only when a change has been made.  I  can  also  tune
+  the sleep command down a little to have it more responsive.  The message  spam
+  from the make that there is nothing to be done is annoying me.  I can  improve
+  the command to call make only when there is work to be done:</p>
+
+  <pre>$ while true; do make -q || make; sleep 0.5; done</pre>
+
+  <p>Good enough for me. I can now fully focus on my LaTex code. As a finishing
+  touch I can  save  the  command  into  the  Makefile  and  simply  call  'make
+  watch':</p>
+
+  <pre>
+# Makefile
+.PHONY: all watch
+
+all: cv.pdf
+
+cv.pdf: cv.tex
+    xelatex cv.tex && xelatex cv.tex
+
+watch:
+    while true; do $(MAKE) -q || $(MAKE); sleep 0.5; done</pre>
+
+  <p>Note: I have also used this approach to auto execute  tests  and  was  very
+  happy how it turned out.</p>
+
+</body>
+</html>
+

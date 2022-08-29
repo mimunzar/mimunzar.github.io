@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../index.css">
+  <title>Logistic Regression - Gradient Training</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a href="../index.html">&lt;&lt; back</a>
+  <h2>Logistic Regression - Gradient Training</h2>
+
+  <p>Let's have some data from which we want to create a  predictive  model  for
+  one of two possible outcomes.  We can model a probability of the data by using
+  a sigmoid function which will clamp the output values to range  \(\langle  0,1
+  \rangle\).</p>
+
+  $$\sigma(X) = {1 \over 1 + \exp(-f(X))}$$
+
+  <p>To tell whether the data belongs to one of the two possible classes we  can
+  express the above probability as a  sum  of  conditional  probabilities.   The
+  probability  of  an  outcome  \(Y\)  given  an  input  data  point  \(X\).</p>
+
+  $$\begin{aligned}
+    P(Y=1|X)
+      &= {1 \over {1 + \exp(-f(X))}} = {\exp{f(X)} \over {1 + \exp{f(X)}}} \\[10pt]
+    P(Y=0|X)
+      &= 1 - P(Y=1|X) = {1 \over {1 + \exp{f(X)}}}
+  \end{aligned}$$
+
+  <p>To assign a class to an input data point,  we  can  now  test  whether  one
+  conditional probability is bigger than the other.</p>
+
+  $$\begin{aligned}
+    1 &\lt {P(Y=1|X) \over P(Y=0|X)} \\[10pt]
+    1 &\lt \exp{f(X)}
+  \end{aligned}$$
+
+  <p>The classification of the data will depend on a task at hand.  So we need a
+  mechanism to adjust above probabilities.  This can be  done  by  parametrizing
+  each feature of an input data point \(X  =  (x_1  \dots  x_n)\)  by  a  weight
+  vector \(W = (w_0 \dots w_n)\).</p>
+
+  $$\begin{aligned}
+    f(X, W)
+      &= w_0 + \sum_i w_i X_i \\[10pt]
+    P(Y=1|X, W)
+      &= {\exp(w_0 + \sum_i w_i X_i) \over {1 + \exp(w_0 + \sum_i w_i X_i)}} \\[10pt]
+    P(Y=0|X, W)
+      &= {1 \over {1 + \exp(w_0 + \sum_i w_i X_i)}} \\[10pt]
+    1 &\lt \exp(w_0 + \sum_i w_i X_i)
+  \end{aligned}$$
+
+  <p>The above conditional probabilities should reflect our training  data.   In
+  other words, we would like to tune the weights  \(W\)  so  that  our  training
+  data are the most probable.  We can  use  Maximum  likelihood  estimation.</p>
+
+  $$\begin{aligned}
+    W &= \arg\max_W \prod_l P(Y^l|X^l,W) \\
+      &= \arg\max_W \sum_l  \ln P(Y^l|X^l,W) \\
+      &= \arg\max_W \lambda(W)
+  \end{aligned}$$
+
+  <p>To measure our classification score on the training data  with  respect  to
+  current weights \(W\) we can use a reward function.  The function assigns high
+  values to correct classifications and low values to miss  classifications.</p>
+
+  $$\begin{aligned}
+    \lambda(W) &= \sum_l Y^l \ln P(Y^l=1|X^l, W) + (1 - Y^l) \ln P(Y^l=0|X^l, W) \\
+      &= \sum_l Y^l \ln P(Y^l=1|X^l, W) + \ln P(Y^l=0|X^l, W) - Y^l \ln P(Y^l=0|X^l, W) \\
+      &= \sum_l Y^l (\ln P(Y^l=1|X^l, W) - \ln P(Y^l=0|X^l, W)) + \ln P(Y^l=0|X^l, W) \\
+      &= \sum_l Y^l \ln {P(Y^l=1|X^l, W) \over P(Y^l=0|X^l, W)} + \ln P(Y^l=0|X^l, W) \\
+      &= \sum_l Y^l (w_0 + \sum_i w_i X^l_i) + \ln {1 \over {\exp(w_0 + \sum_i w_i X^l_i) + 1}} \\
+      &= \sum_l A + B
+  \end{aligned}$$
+
+  <p>To find the weights \(W\) which maximize the reward  we  can  use  Gradient
+  Ascent algorithm.  The algorithm repeatedly computes gradient of  some  reward
+  function from training data with respect to  each  weight  \(w_i\).   Than  it
+  updates \(W\) in a direction of the gradient.</p>
+
+  $${\partial A \over \partial w_i} = Y^l X^l_i$$
+
+  <p>Above   follows   from   the   application   of   the    Chain    Rule:</p>
+
+  $$\begin{aligned}
+    {\partial Y^l (w_0 + \sum_i w_i X^l_i) \over \partial w_0 + \sum_i w_i X^l_i}
+      &= Y^l \\[10pt]
+    {\partial w_0 + \sum_i w_i X^l_i \over \partial w_i}
+      &= X^l_i
+  \end{aligned}$$
+
+  <p>Continuing   with   the   term   \(B\)   of   the   reward    function:</p>
+
+  $$\begin{aligned}
+    {\partial B \over \partial w_i}
+      &= -{\exp(w_0 + \sum_i w_i X^l_i) + 1 \over (\exp(w_0 + \sum_i w_i X^l_i) + 1)^{2}}\exp(w_0 + \sum_i w_i X^l_i)X^l_i \\
+      &= -{\exp(w_0 + \sum_i w_i X^l_i) \over \exp(w_0 + \sum_i w_i X^l_i) + 1}X^l_i \\
+      &= -P(Y=1|X^l,W)X^l_i
+  \end{aligned}$$
+
+  <p>Above   follows   from   the   application   of   the    Chain    Rule:</p>
+
+  $$\begin{aligned}
+    {\partial{\ln {1 \over {\exp(w_0 + \sum_i w_i X^l_i) + 1}}} \over \partial {1 \over {\exp(w_0 + \sum_i w_i X^l_i) + 1}}}
+      &= \exp(w_0 + \sum_i w_i X^l_i) + 1 \\[10pt]
+    {\partial{{1 \over {\exp(w_0 + \sum_i w_i X^l_i) + 1}}} \over \partial{\exp(w_0 + \sum_i w_i X^l_i) + 1}}
+      &= -(\exp(w_0 + \sum_i w_i X^l_i) + 1)^{-2} \\[10pt]
+    {\partial{{\exp(w_0 + \sum_i w_i X^l_i) + 1}} \over \partial{w_0 + \sum_i w_i X^l_i}}
+      &= \exp(w_0 + \sum_i w_i X^l_i) \\[10pt]
+    {\partial{{w_0 + \sum_i w_i X^l_i}} \over \partial w_i}
+      &= X^l_i
+  \end{aligned}$$
+
+  <p>The resulting equation computes a gradient of the reward  function  on  the
+  training data:</p>
+
+  $$\begin{aligned}
+    {\partial \lambda(W) \over \partial w_i} &= \sum_l Y^l X^l_i -P(Y=1|X^l,W)X^l_i \\
+      &= \sum_l X^l_i(Y^l -P(Y=1|X^l,W))
+  \end{aligned}$$
+
+  <p>Which  we  can  use  to  optimize  model's  weights  (with  learning   rate
+  \(\eta\)):</p>
+
+  $$\begin{aligned}
+    w_i(t + 1) &= w_i(t) + \eta{\partial \lambda(W) \over \partial w_i} \\
+      &= w_i(t) + \eta{\sum_l X^l_i(Y^l -P(Y=1|X^l,W))}
+  \end{aligned}$$
+
+  <h3>Logistic Regression for More Classes</h3>
+
+  <p>To generalize Logistic Regression to a more than two classes we  can  build
+  such classifier from a set of binary classifiers.  Let's say  we  have  \(Y  =
+  (y_0 \dots y_k)\) classes, we can train  \(k  -  1\)  classifiers  where  each
+  classifier  is  run  with  its  class  against  a  pivot  class   \(y_0\).</p>
+
+  $$\begin{aligned}
+    P(Y=y_k|X) &= {\exp(w_{k0} + \sum_i w_{ki} X_i) \over {(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)) + 1}} \\[10pt]
+    P(Y=y_0|X) &= {1 \over {(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)) + 1}}
+  \end{aligned}$$
+
+  <p>The resulting class will  have  the  highest  conditional  probability.</p>
+
+  <h3>References</h3>
+  <dl>
+    <dt>Tom Mitchell: Carnegie Mellon University</dt>
+      <dd><a href="http://www.cs.cmu.edu/~tom/10701_sp11/lectures.shtml">http://www.cs.cmu.edu/~tom/10701_sp11/lectures.shtml</a></dd>
+    <dt>Tapan Bhowmik: Inteligencia Artificial</dt>
+      <dd><a href="https://www.redalyc.org/pdf/925/92542543003.pdf">https://www.redalyc.org/pdf/925/92542543003.pdf</a></dd>
+  </dl>
+
+</body>
+</html>
+
