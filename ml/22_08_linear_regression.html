@@ -30,7 +30,7 @@
   $$\begin{aligned}
     p(y|x)
       &= \mathcal{N}(f(x), \sigma) \\
-      &= {1 \over \sqrt{2\pi\sigma^2}}\exp(-{(y - f(x))^2 \over 2\sigma^2})
+      &= {1 \over \sqrt{2\pi\sigma^2}}\exp\left[-{(y - f(x))^2 \over 2\sigma^2}\right]
   \end{aligned}
   \tag{1}\label{eq:foo}$$
 
@@ -53,8 +53,8 @@
 
   $$\begin{aligned}
     \lambda(W)
-      &= \sum_l \ln {1 \over \sqrt{2\pi\sigma^2}}\exp(-{(y^l - f(x^l, W))^2 \over 2\sigma^2}) \\
-      &= \sum_l \ln {1 \over \sqrt{2\pi\sigma^2}} + \ln \exp(-{(y^l - f(x^l, W))^2 \over 2\sigma^2}) \\
+      &= \sum_l \ln {1 \over \sqrt{2\pi\sigma^2}}\exp\left[-{(y^l - f(x^l, W))^2 \over 2\sigma^2}\right] \\
+      &= \sum_l \ln {1 \over \sqrt{2\pi\sigma^2}} + \ln \exp\left[-{(y^l - f(x^l, W))^2 \over 2\sigma^2}\right] \\
       &= \sum_l \ln {1 \over \sqrt{2\pi\sigma^2}} - {(y^l - f(x^l, W))^2 \over 2\sigma^2} \\
       &= \sum_l A - B
   \end{aligned}$$
@@ -78,7 +78,7 @@
   $$\begin{aligned}
     {\partial B \over \partial w_i} 
       &= {\partial {(y^l - f(x^l, W))^2 \over 2\sigma^2} \over \partial w_i} \\
-      &=  {1 \over 2\sigma^2} 2(y^l - f(x^l, W)) (-{\partial f(x^l, W) \over \partial w_i}) \\
+      &= {1 \over 2\sigma^2} 2(y^l - f(x^l, W)) \left(-{\partial f(x^l, W) \over \partial w_i}\right) \\
       &= -{(y^l - f(x^l, W)) \over \sigma^2}{\partial f(x^l, W) \over \partial w_i}
   \end{aligned}$$
 

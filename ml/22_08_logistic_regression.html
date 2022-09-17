@@ -95,7 +95,7 @@
 
   $$\begin{aligned}
     {\partial B \over \partial w_i}
-      &= -{\exp(w_0 + \sum_i w_i X^l_i) + 1 \over (\exp(w_0 + \sum_i w_i X^l_i) + 1)^{2}}\exp(w_0 + \sum_i w_i X^l_i)X^l_i \\
+      &= -{\exp(w_0 + \sum_i w_i X^l_i) + 1 \over \left(\exp(w_0 + \sum_i w_i X^l_i) + 1\right)^{2}}\exp(w_0 + \sum_i w_i X^l_i)X^l_i \\
       &= -{\exp(w_0 + \sum_i w_i X^l_i) \over \exp(w_0 + \sum_i w_i X^l_i) + 1}X^l_i \\
       &= -P(Y=1|X^l,W)X^l_i
   \end{aligned}$$
@@ -137,8 +137,8 @@
   classifier  is  run  with  its  class  against  a  pivot  class   \(y_0\).</p>
 
   $$\begin{aligned}
-    P(Y=y_k|X) &= {\exp(w_{k0} + \sum_i w_{ki} X_i) \over {(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)) + 1}} \\[10pt]
-    P(Y=y_0|X) &= {1 \over {(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)) + 1}}
+    P(Y=y_k|X) &= {\exp(w_{k0} + \sum_i w_{ki} X_i) \over {\left(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)\right) + 1}} \\[10pt]
+    P(Y=y_0|X) &= {1 \over {\left(\sum_{j=1}^{k-1} \exp(w_{j0} + \sum_i w_{ji} X_i)\right) + 1}}
   \end{aligned}$$
 
   <p>The resulting class will  have  the  highest  conditional  probability.</p>

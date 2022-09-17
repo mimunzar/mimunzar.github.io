@@ -40,8 +40,8 @@
       &= {P(X|Y=1)P(Y=1) \over {P(X|Y=1)P(Y=1) + P(X|Y=0)P(Y=0)}} \\
       &= {1 \over {1 +         {P(X|Y=0)P(Y=0) \over P(X|Y=1)P(Y=1)}}} \\
       &= {1 \over {1 + \exp \ln{P(X|Y=0)P(Y=0) \over P(X|Y=1)P(Y=1)}}} \\
-      &= {1 \over {1 + \exp(\ln{P(X|Y=1) \over P(X|Y=0)} + \ln{P(Y=1) \over P(Y=0)})}} \\
-      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)})}}
+      &= {1 \over {1 + \exp\left(\ln{P(X|Y=1) \over P(X|Y=0)} + \ln{P(Y=1) \over P(Y=0)}\right)}} \\
+      &= {1 \over {1 + \exp\left(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)}\right)}}
   \end{aligned}\tag{1}\label{eq:foo}$$
 
   <p>In the last equation we have used the Conditional Independence  assumption.
@@ -50,8 +50,8 @@
 
   $$\begin{aligned}
     \sum_i \ln{P(X_i|Y=1) \over P(X_i|Y=0)}
-      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}}\exp({{-({X_i - \mu_{i1}})^2} \over {2\sigma^2}}) \over {1 \over {\sqrt{2\pi\sigma^2}}}\exp({{-({X_i - \mu_{i0}})^2} \over {2\sigma^2}})} \\
-      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}} \over {1 \over {\sqrt{2\pi\sigma^2}}}} + \ln{\exp{({{({X_i - \mu_{i0}})^2} \over {2\sigma^2}} - {{{({X_i - \mu_{i1}})^2} \over {2\sigma^2}}}})} \\
+      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}}\exp\left({{-({X_i - \mu_{i1}})^2} \over {2\sigma^2}}\right) \over {1 \over {\sqrt{2\pi\sigma^2}}}\exp\left({{-({X_i - \mu_{i0}})^2} \over {2\sigma^2}}\right)} \\
+      &= \sum_i \ln{{1 \over {\sqrt{2\pi\sigma^2}}} \over {1 \over {\sqrt{2\pi\sigma^2}}}} + \ln{\exp\left({{({X_i - \mu_{i0}})^2} \over {2\sigma^2}} - {{{({X_i - \mu_{i1}})^2} \over {2\sigma^2}}}\right)} \\
       &= \sum_i {{({X_i - \mu_{i0}})^2} \over {2\sigma^2}} - {{{({X_i - \mu_{i1}})^2} \over {2\sigma^2}}} \\
       &= \sum_i {{X_i^2 - 2X_i\mu_{i0} + \mu_{i0}^2 - X_i^2 + 2X_i\mu_{i1} - \mu_{i1}^2} \over {2\sigma^2}} \\
       &= \sum_i {{\mu_{i1} - \mu_{i0} \over \sigma^2}X_i + {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}}
@@ -62,8 +62,8 @@
 
   $$\begin{aligned}
     P(Y=0|X)
-      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)})}} \\
-      &= {1 \over {1 + \exp(\ln{P(Y=1) \over P(Y=0)} + \sum_i {{\mu_{i1} - \mu_{i0} \over \sigma^2}X_i + {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}}})} \\
+      &= {1 \over {1 + \exp\left(\ln{P(Y=1) \over P(Y=0)} + \sum_i\ln{P(X_i|Y=1) \over P(X_i|Y=0)}\right)}} \\
+      &= {1 \over {1 + \exp\left(\ln{P(Y=1) \over P(Y=0)} + \sum_i {{\mu_{i1} - \mu_{i0} \over \sigma^2}X_i + {\mu_{i0}^2 - \mu_{i1}^2 \over 2\sigma^2}}\right)}} \\
       &= {1 \over {1 + \exp(w_0 + \sum_i w_iX_i)}}
   \end{aligned}$$
 
