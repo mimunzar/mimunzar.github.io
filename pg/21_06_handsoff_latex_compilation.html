@@ -27,12 +27,12 @@
 
   <pre>
 # Makefile
+all: cv.pdf
 .PHONY: all
 
-all: cv.pdf
-
 cv.pdf: cv.tex
-    xelatex cv.tex && xelatex cv.tex</pre>
+    xelatex cv.tex
+    xelatex cv.tex</pre>
 
   <pre>$ while true; do make; sleep 0.5; done</pre>
 
@@ -49,15 +49,19 @@ cv.pdf: cv.tex
 
   <pre>
 # Makefile
-.PHONY: all watch
-
 all: cv.pdf
+.PHONY: all
 
 cv.pdf: cv.tex
-    xelatex cv.tex && xelatex cv.tex
+    xelatex cv.tex
+    xelatex cv.tex
 
 watch:
-    while true; do $(MAKE) -q || $(MAKE); sleep 0.5; done</pre>
+    while true; do \
+        $(MAKE) -q || $(MAKE); \
+        sleep 0.5; \
+    done
+.PHONY: watch</pre>
 
   <p>Note: I have also used this approach to auto execute  tests  and  was  very
   happy how it turned out.</p>
