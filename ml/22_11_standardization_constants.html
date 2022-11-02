@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../index.css">
+  <title>Standardization Constants</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <a href="../index.html">&lt;&lt; back</a>
+  <h2>Standardization Constants</h2>
+
+  <p>Data standardization allows us to do  a  fusion  of  different  modalities.
+  Another benefit is, that it can speed up training as described in <a href="http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf">[Yann LeCun: Efficient BackProp]</a>.
+  The standardization of an input \(x\) is done with the following  formula:</p>
+
+  $$\begin{aligned}
+    x_{new} = {x - \bar{x} \over s}
+  \end{aligned}$$
+
+  <p>The standardization is used both in a training mode  and  in  an  inference
+  mode.  The mean \(\bar{x}\) and the standard deviation \(s\) are computed from
+  training data with the following formulas:</p>
+
+  $$\begin{aligned}
+    \bar{x} &= {1 \over N} \sum_i^N x_i \\
+    s^2     &= {1 \over N} \sum_i^N \left(x_i  - \bar{x}\right)^2 = {1 \over N} S
+  \end{aligned}$$
+
+  <p>To compute the variance two passes over  training  data  are  needed.   The
+  first pass computes the mean.  The second pass uses the mean to calculate  the
+  variance.  By expanding the \(S\) term the computation  can  be  done  in  one
+  pass: </p>
+
+  $$\begin{aligned}
+    S &= \sum^N_i (x_i - \bar{x})^2 \\
+      &= \sum^N_i x_i^2 - 2x_i\bar{x} + \bar{x}^2 \\
+      &= N\bar{x}^2 + \sum^N_i x_i^2 - 2\bar{x}\sum^N_i x_i \\
+      &= SA + \sum^N_i x_i^2 - SB
+  \end{aligned}$$
+
+  <p>Where \(SA\) and \(SB\) terms can be expanded to:</p>
+
+  $$\begin{aligned}
+    SA &= N\bar{x}^2
+        = N \left[{1 \over N}\sum^N_i x_i\right] \left[{1 \over N}\sum^N_i x_i\right]
+        = {1 \over N}\left[\sum^N_i x_i\right]^2 \\
+    SB &= 2\bar{x}\sum^N_i x_i
+        = 2\left[{1 \over N} \sum^N_i x_i\right] \sum^N_i x_i
+        = {2 \over N}\left[\sum^N_i x_i\right]^2
+  \end{aligned}$$
+
+  <p>Substituting \(SA\) and \(SB\) back to \(S\):</p>
+
+  $$\begin{aligned}
+    S &= SA + \sum^N_i x_i^2 - SB \\
+      &= {1 \over N}\left[\sum^N_i x_i\right]^2 + \sum^N_i x_i^2 - {2 \over N}\left[\sum^N_i x_i\right]^2 \\
+      &= \sum^N_i x_i^2 - {1 \over N}\left[\sum^N_i x_i\right]^2 \\
+  \end{aligned}$$
+
+  <p>Results in the following formula for the variance:</p>
+
+  $$\begin{aligned}
+    s^2 &= {1 \over N} S \\
+        &= {1 \over N} \left[\sum^N_i x_i^2 - {1 \over N}\left[\sum^N_i x_i\right]^2\right] \\
+        &= {1 \over N} \sum^N_i x_i^2 - \bar{x}^2
+  \end{aligned}$$
+
+  <p>With the above equation we can compute the variance in  one  pass.   During
+  the pass the count \(N\), the  sum  of  \(x\)  and  the  sum  of  \(x^2\)  are
+  calculated.  After the pass these constants can be used to calculate the  mean
+  and the standard deviation of training data.</p>
+
+  <h3>References</h3>
+  <dl>
+    <dt>Yann LeCun: Efficient BackProp</dt>
+    <dd><a href="http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf">http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf</a></dd>
+  </dl>
+  <dl>
+    <dt>ThoughtCo.: Sum of Squares Formula Shortcut </dt>
+    <dd><a href="https://www.thoughtco.com/sum-of-squares-formula-shortcut-3126266">https://www.thoughtco.com/sum-of-squares-formula-shortcut-3126266</a></dd>
+  </dl>
+
+</body>
+</html>
+

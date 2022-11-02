@@ -13,7 +13,7 @@
   <p>I like to align code vertically.  The code looks  to  me  more  declarative
   (or like assembly).  It helps me to separate  definitions  from  the  rest  of
   the code.  I think.  Maybe it is just OCD.  If yes, than Peter Norvig  has  it
-  too [Norvig pytudes]!</p>
+  too <a href="https://github.com/norvig/pytudes">[Peter Norvig: pytudes]</a>!</p>
 
   <pre>
 func! s:prepend_space(n, s) abort
@@ -42,7 +42,6 @@ endfunc
 
 command! -range Va call s:main(&lt;line1&gt;, &lt;line2&gt;, getreg('/'))</pre>
 
-
   <p>Above code defines a new command called 'Va'. The command vertically aligns
   current selection by a last search pattern. It is not bulletproof, but does it
   for  me  (for  example   smarter   index   selection   would   be   nice).</p>
@@ -51,7 +50,7 @@ command! -range Va call s:main(&lt;line1&gt;, &lt;line2&gt;, getreg('/'))</pre>
 
   <h3>References</h3>
   <dl>
-    <dt>[Norvig pytudes] Peter Norvig: pytudes on GitHub</dt>
+    <dt>Peter Norvig: pytudes</dt>
     <dd><a href="https://github.com/norvig/pytudes">https://github.com/norvig/pytudes</a></dd>
   </dl>
 
